@@ -1,6 +1,30 @@
+#!/usr/bin/node
+
 var fs = require('fs');
 
+var keyMatrix = function(key){
+  // returns a hash of alphabet - q ==> letter are keys and coordinates are value
+  // value [row, col]
+  var tempHash = {};
+  var count = 0;
 
+  key.toLowerCase().split('').forEach(function(element, index){
+    if(!tempHash.hasOwnProperty(element) && element !== " "){
+      tempHash[element] = [Math.floor(count/5), count%5];
+      count++;
+    }
+  })
+  for(var i=0; i<26; i++){
+    // 97 === 'a'
+    var letter = (String.fromCharCode(i+97) !== 'q') ? String.fromCharCode(i+97) : String.fromCharCode(i+97+1);
+    if(!tempHash.hasOwnProperty(letter)){
+      tempHash[letter] = [Math.floor(count/5), count%5];
+      count++;
+    }
+  }
+ 
+  return tempHash;
+}
 
 var encrypt = function(key, direction, message){
 
@@ -36,4 +60,6 @@ var main = function(){
   }
 }
 
-main();
+// main();
+var test = keyMatrix('first example')
+console.log(test);

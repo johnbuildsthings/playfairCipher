@@ -26,11 +26,46 @@ var keyMatrix = function(key){
   tempString.match(/.{1,5}/g).forEach(function(element, index){
     matrix.push(element.split(''));
   })
-  return [tempHash, tempString];
+  return [tempHash, matrix];
 }
 
 var encryptSort = function(key, elements){
+  // returns the new letters based on playfair alg
+  
+  var subDigram = '';
+  var a = key[0][elements[0]], b = key[0][elements[1]];
 
+  if(a[0] === b[0]){
+    if(a[1] === 4){
+      a[1] = 0;
+    }else{
+      a[1] = a[1] + 1;
+    }
+    if(b[1] === 4){
+      b[1] = 0;
+    }else{
+      b[1] = b[1] + 1;
+    }
+  }else if(a[1] === b[1]){
+    if(a[0] === 4){
+      a[0] = 0;
+    }else{
+      a[0] = a[0] + 1;
+    }
+    if(b[0] === 4){
+      b[0] = 0;
+    }else{
+      b[0] = b[0] + 1;
+    }
+  }else{
+    var temp = [];
+    temp.push([a[0], b[1]], [b[0], a[1]])
+    a = temp[0];
+    b = temp[1];
+  }
+
+  subDigram += key[1][a[0]][a[1]] + key[1][b[0]][b[1]];
+  return subDigram;
 }
 
 var encrypt = function(key, direction, message){
@@ -68,3 +103,6 @@ var main = function(){
 }
 
 // main();
+// var testKey = keyMatrix('example key');
+// var testEncrypt = encryptSort(testKey, 'ya');
+// console.log(testKey[1], testEncrypt, 'ya')

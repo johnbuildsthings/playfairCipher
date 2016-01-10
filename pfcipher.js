@@ -31,9 +31,9 @@ var keyMatrix = function(key){
 
 var encryptSort = function(key, elements){
   // returns the new letters based on playfair alg
-  
+
   var subDigram = '';
-  var a = key[0][elements[0]], b = key[0][elements[1]];
+  var a = key[0][elements[0]].slice(0), b = key[0][elements[1]].slice(0);
 
   if(a[0] === b[0]){
     if(a[1] === 4){
@@ -69,7 +69,33 @@ var encryptSort = function(key, elements){
 }
 
 var encrypt = function(key, direction, message){
+  /*
+    encrypt
+    strip all white space out of message
+    break message into digrams
+    loop over digrams
+      check if not length is 2 ==> add x
+      check if letter are not different
+        make string of rest of digrams starting with second letter of current
+        make temp array of digrams with previous string
+        concat original array from 0 to current and new array
+        replace second letter with x
+      set cipher += call encryptSort with key and digram
+  */
+  var cipherText = '', digrams = message.toLowerCase().split(' ').join('').match(/.{1,2}/g), key = keyMatrix(key);
+  console.log(key[1]);
 
+  for(var i=0; i<digrams.length; i++){
+    if(digrams[i].length !== 2) digrams[i] += 'x';
+    if(digrams[i][0] === digrams[i][1]){
+      var temp = digrams[i][0] + 'x' + digrams[i][1] + digrams.splice(i+1, (i+1 - digrams.length)).join('');
+      temp = temp.match(/.{1,2}/g);
+      digrams = digrams.concat(temp);
+    }
+    cipherText += encryptSort(key, digrams[i]);
+  }
+
+  return cipherText;
 }
 
 var writeToFile = function(key, direction, origin, dest){
@@ -104,5 +130,7 @@ var main = function(){
 
 // main();
 // var testKey = keyMatrix('example key');
-// var testEncrypt = encryptSort(testKey, 'ya');
-// console.log(testKey[1], testEncrypt, 'ya')
+// var testEncrypt = encryptSort(testKey, 'ta');
+// console.log(testKey[1], testEncrypt, 'ta')
+// var test = encrypt('example key', 'encrypt', 'this is a test');
+// console.log(test);
